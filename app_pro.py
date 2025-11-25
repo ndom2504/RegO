@@ -33,10 +33,18 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
     REMEMBER_COOKIE_SECURE=True,
     REMEMBER_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_DOMAIN='.ocean-factory.ca',
+    REMEMBER_COOKIE_DOMAIN='.ocean-factory.ca',
 )
 
 CORS(app)
 db.init_app(app)
+
+@app.before_request
+def enforce_canonical_domain():
+    host = request.host.split(':')[0]
+    if host == 'www.ocean-factory.ca':
+        return redirect(f"https://ocean-factory.ca{request.full_path}")
 
 # Configuration OAuth Microsoft
 microsoft_oauth = MicrosoftOAuth(app)
@@ -245,6 +253,15 @@ def user_info():
     return jsonify({
         'success': True,
         'user': user_dict
+    })
+
+@app.route('/debug/session')
+def debug_session():
+    return jsonify({
+        'authenticated': current_user.is_authenticated,
+        'session_keys': list(session.keys()),
+        'cookie_domain': app.config.get('SESSION_COOKIE_DOMAIN'),
+        'remember_cookie_domain': app.config.get('REMEMBER_COOKIE_DOMAIN'),
     })
 
 
