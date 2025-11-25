@@ -189,11 +189,11 @@ def auth_microsoft_callback():
         user.outlook_email = email
         user.last_login = datetime.utcnow()
         
-    db.session.commit()
-    print("[AUTH CALLBACK] User commit OK id=", user.id, "email=", user.email, flush=True)
-    session.permanent = True
-    login_user(user, remember=True)
-    print("[AUTH CALLBACK] login_user OK session keys=", list(session.keys()), flush=True)
+        db.session.commit()
+        print("[AUTH CALLBACK] User commit OK id=", user.id, "email=", user.email, flush=True)
+        session.permanent = True
+        login_user(user, remember=True)
+        print("[AUTH CALLBACK] login_user OK session keys=", list(session.keys()), flush=True)
         
         flash(f'Connexion réussie! Bienvenue {display_name}', 'success')
         return redirect(url_for('dashboard'))
