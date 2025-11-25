@@ -6,6 +6,7 @@ from flask import Flask, render_template, jsonify, request, send_file, redirect,
 from flask_cors import CORS
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 import os
 from datetime import datetime, timedelta
 
@@ -22,6 +23,14 @@ app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key-ch
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///rego.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
+# Contexte proxy (Render) pour que Flask respecte X-Forwarded-* (schéma/host)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
+# Cookies de session sécurisés en prod
+app.config.update(
+    PREFERRED_URL_SCHEME='https',
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
 
 CORS(app)
 db.init_app(app)
@@ -183,7 +192,10 @@ def auth_microsoft_callback():
         return redirect(url_for('dashboard'))
         
     except Exception as e:
-        flash(f'Erreur d\'authentification Microsoft: {str(e)}', 'error')
+        import traceback
+        print("[AUTH CALLBACK ERROR]", e)
+        traceback.print_exc()
+        flash(f"Erreur d'authentification Microsoft: {str(e)}", 'error')
         return redirect(url_for('login'))
 
 

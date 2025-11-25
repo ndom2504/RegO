@@ -59,7 +59,9 @@ class MicrosoftOAuth:
     
     def get_token(self, redirect_uri):
         """Récupère le token après autorisation"""
-        token = self.oauth.microsoft.authorize_access_token()
+        # Authlib requiert le même redirect_uri que celui utilisé à l'étape d'authorize
+        # et gère automatiquement le PKCE via la session
+        token = self.oauth.microsoft.authorize_access_token(redirect_uri=redirect_uri)
         return token
     
     def get_user_info(self, token):
