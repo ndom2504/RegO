@@ -1,0 +1,28 @@
+# Bibliothèques pour Microsoft Graph API
+msal==1.25.0
+requests==2.31.0
+
+# Bibliothèques pour la gestion des emails
+email-validator==2.1.0
+
+# Bibliothèques pour l'export PDF
+reportlab==4.0.7
+Pillow==10.1.0
+
+# Bibliothèques pour l'interface utilisateur
+rich==13.7.0
+python-dotenv==1.0.0
+
+# Bibliothèques pour la gestion des données
+pandas==2.1.4
+
+# Bibliothèques pour le dashboard web
+flask==3.0.0
+flask-cors==4.0.0
+flask-login==0.6.3
+flask-sqlalchemy==3.1.1
+werkzeug==3.0.1
+
+# OAuth2 et serveur de production
+authlib==1.6.5
+gunicorn==21.2.0

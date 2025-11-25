@@ -1,0 +1,16 @@
+name: rego-ocean-factory
+type: web
+env: python
+region: oregon
+plan: free
+buildCommand: pip install -r requirements.txt
+startCommand: gunicorn app_pro:app
+envVars:
+  - key: FLASK_SECRET_KEY
+    value: 77831fb56cc4f6dc5721c0a70bb6c84d7a825c511154820954612c7fa7e48613
+  - key: MICROSOFT_CLIENT_ID
+    value: 0bf5e2d3-8bd8-4018-bb93-574036e9da92
+  - key: MICROSOFT_CLIENT_SECRET
+    sync: false
+  - key: MICROSOFT_TENANT_ID
+    value: common

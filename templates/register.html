@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - RegO</title>
+    <style>
+        /* Mêmes styles que login.html */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a5490 0%, #0d2d52 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .register-header {
+            background: linear-gradient(135deg, #1a5490 0%, #0d2d52 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .logo { width: 150px; height: auto; margin-bottom: 10px; filter: brightness(0) invert(1); }
+        .register-header h1 { font-size: 1.8em; margin-bottom: 5px; }
+        .register-header p { opacity: 0.9; font-size: 0.95em; }
+        .register-form { padding: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #333; font-weight: 600; font-size: 0.9em; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a5490;
+            box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.1);
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a5490 0%, #0d2d52 100%);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(26, 84, 144, 0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .login-link { text-align: center; margin-top: 20px; color: #666; font-size: 0.9em; }
+        .login-link a { color: #1a5490; text-decoration: none; font-weight: 600; }
+        .login-link a:hover { text-decoration: underline; }
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .alert.error { background: #fee; border-left: 4px solid #e53e3e; color: #c53030; }
+        .alert.success { background: #efe; border-left: 4px solid #38a169; color: #276749; }
+        .alert.show { display: block; animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner {
+            display: inline-block; width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <svg class="logo" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="25" width="60" height="50" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+                <polyline points="10,25 40,50 70,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                <text x="85" y="65" font-family="'Segoe UI'" font-size="42" font-weight="bold" fill="currentColor">RegO</text>
+            </svg>
+            <h1>Créer un compte</h1>
+            <p>Rejoignez RegO aujourd'hui</p>
+        </div>
+
+        <form class="register-form" id="registerForm">
+            <div class="alert" id="alert"></div>
+
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur *</label>
+                <input type="text" id="username" name="username" required minlength="3">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="full_name">Nom complet</label>
+                <input type="text" id="full_name" name="full_name">
+            </div>
+
+            <div class="form-group">
+                <label for="company">Entreprise</label>
+                <input type="text" id="company" name="company">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe *</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirmer le mot de passe *</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                Créer mon compte
+            </button>
+
+            <div class="login-link">
+                Vous avez déjà un compte ? <a href="/login">Se connecter</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const alert = document.getElementById('alert');
+
+        function showAlert(message, type = 'error') {
+            alert.textContent = message;
+            alert.className = `alert ${type} show`;
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (password !== confirmPassword) {
+                showAlert('Les mots de passe ne correspondent pas');
+                return;
+            }
+
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                full_name: document.getElementById('full_name').value,
+                company: document.getElementById('company').value,
+                password: password
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Création du compte...';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Compte créé avec succès! Redirection...', 'success');
+                    setTimeout(() => window.location.href = data.redirect, 1000);
+                } else {
+                    showAlert(data.error);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Créer mon compte';
+                }
+            } catch (error) {
+                showAlert('Erreur de connexion au serveur');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Créer mon compte';
+            }
+        });
+    </script>
+</body>
+</html>

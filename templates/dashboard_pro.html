@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RegO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a5490 0%, #0d2d52 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .sidebar-logo { width: 120px; height: auto; filter: brightness(0) invert(1); }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left: 4px solid white;
+        }
+        .menu-item svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+        
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            color: #1a5490;
+            font-size: 1.8em;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a5490, #0d2d52);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .user-details { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; color: #333; }
+        .user-email { font-size: 0.85em; color: #666; }
+        .btn-logout {
+            padding: 8px 16px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover { background: #c53030; }
+        
+        /* Statistics cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #1a5490;
+            margin-bottom: 5px;
+        }
+        .stat-change {
+            font-size: 0.85em;
+            color: #38a169;
+        }
+        .stat-change.negative { color: #e53e3e; }
+        
+        /* Quick actions */
+        .quick-actions {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .quick-actions h2 {
+            color: #1a5490;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1a5490, #0d2d52);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 84, 144, 0.3);
+        }
+        .btn-secondary {
+            background: #f5f7fa;
+            color: #1a5490;
+            border: 2px solid #1a5490;
+        }
+        .btn-secondary:hover {
+            background: #1a5490;
+            color: white;
+        }
+        
+        /* Recent activity */
+        .recent-activity {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .recent-activity h2 {
+            color: #1a5490;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .activity-item {
+            padding: 15px;
+            border-left: 3px solid #1a5490;
+            background: #f5f7fa;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .activity-date {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        .activity-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .status-connected {
+            background: #c6f6d5;
+            color: #276749;
+        }
+        .status-disconnected {
+            background: #fed7d7;
+            color: #9b2c2c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <svg class="sidebar-logo" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="25" width="60" height="50" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+                <polyline points="10,25 40,50 70,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+                <text x="85" y="65" font-family="'Segoe UI'" font-size="42" font-weight="bold" fill="currentColor">RegO</text>
+            </svg>
+        </div>
+        <div class="sidebar-menu">
+            <a href="/dashboard" class="menu-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Tableau de bord
+            </a>
+            <a href="/communications" class="menu-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Registre des Communications
+            </a>
+            <a href="/profile" class="menu-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Configuration
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Tableau de bord</h1>
+                <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
+                    Bienvenue sur votre registre de communications professionnelles
+                </p>
+            </div>
+            <div class="user-info">
+                <div class="user-details">
+                    <span class="user-name" id="userName">Chargement...</span>
+                    <span class="user-email" id="userEmail">-</span>
+                </div>
+                <div class="user-avatar" id="userAvatar">?</div>
+                <button class="btn-logout" onclick="logout()">Déconnexion</button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Communications</h3>
+                <div class="stat-value" id="totalComms">0</div>
+                <div class="stat-change">Tous les emails enregistrés</div>
+            </div>
+            <div class="stat-card">
+                <h3>Ce mois-ci</h3>
+                <div class="stat-value" id="monthComms">0</div>
+                <div class="stat-change">Communications actives</div>
+            </div>
+            <div class="stat-card">
+                <h3>Catégories</h3>
+                <div class="stat-value" id="categoryCount">0</div>
+                <div class="stat-change">Classifications uniques</div>
+            </div>
+            <div class="stat-card">
+                <h3>Statut Outlook</h3>
+                <div class="stat-value" style="font-size: 1.2em;">
+                    <span class="status-badge" id="outlookStatus">Vérification...</span>
+                </div>
+                <div class="stat-change">Configuration API</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2>Actions rapides</h2>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="syncEmails()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Synchroniser les emails</span>
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='/communications'">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Voir le registre</span>
+                </button>
+                <button class="btn btn-secondary" onclick="exportPDF()">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Exporter en PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h2>Activité récente</h2>
+            <div id="recentActivity">
+                <p style="text-align: center; color: #666; padding: 20px;">Chargement...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Charger les données utilisateur
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const user = data.user;
+                    document.getElementById('userName').textContent = user.full_name || user.username;
+                    document.getElementById('userEmail').textContent = user.outlook_email || user.email;
+                    
+                    const initials = (user.full_name || user.username).split(' ').map(n => n[0]).join('').toUpperCase();
+                    document.getElementById('userAvatar').textContent = initials;
+                    
+                    // Vérifier la configuration Outlook
+                    const hasOutlookConfig = user.outlook_client_id && user.outlook_tenant_id;
+                    const statusBadge = document.getElementById('outlookStatus');
+                    if (hasOutlookConfig) {
+                        statusBadge.textContent = 'Configuré';
+                        statusBadge.className = 'status-badge status-connected';
+                    } else {
+                        statusBadge.textContent = 'Non configuré';
+                        statusBadge.className = 'status-badge status-disconnected';
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur chargement utilisateur:', error);
+            }
+        }
+
+        // Charger les statistiques
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/communications/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalComms').textContent = data.total || 0;
+                    document.getElementById('monthComms').textContent = data.this_month || 0;
+                    document.getElementById('categoryCount').textContent = data.categories || 0;
+                }
+            } catch (error) {
+                console.error('Erreur chargement stats:', error);
+            }
+        }
+
+        // Charger l'activité récente
+        async function loadRecentActivity() {
+            try {
+                const response = await fetch('/api/communications/list?limit=5');
+                const data = await response.json();
+                
+                if (data.success && data.communications.length > 0) {
+                    const html = data.communications.map(comm => `
+                        <div class="activity-item">
+                            <div class="activity-date">${new Date(comm.received_date).toLocaleDateString('fr-FR')}</div>
+                            <div class="activity-title">${comm.subject}</div>
+                            <div class="activity-description">De: ${comm.sender}</div>
+                        </div>
+                    `).join('');
+                    document.getElementById('recentActivity').innerHTML = html;
+                } else {
+                    document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucune communication enregistrée</p>';
+                }
+            } catch (error) {
+                console.error('Erreur chargement activité:', error);
+            }
+        }
+
+        // Synchroniser les emails
+        async function syncEmails() {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Synchronisation...';
+            
+            try {
+                const response = await fetch('/api/sync', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`${data.count} emails synchronisés avec succès!`);
+                    loadStats();
+                    loadRecentActivity();
+                } else {
+                    alert('Erreur: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erreur de synchronisation');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Exporter en PDF
+        async function exportPDF() {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Export...';
+            
+            try {
+                const response = await fetch('/api/export-pdf');
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `registre_communications_${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } catch (error) {
+                alert('Erreur lors de l\'export PDF');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Déconnexion
+        async function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                await fetch('/logout', { method: 'POST' });
+                window.location.href = '/login';
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadStats();
+            loadRecentActivity();
+        });
+    </script>
+</body>
+</html>
