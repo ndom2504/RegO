@@ -12,6 +12,6 @@ services:
       - key: MICROSOFT_CLIENT_ID
         value: 0bf5e2d3-8bd8-4018-bb93-574036e9da92
       - key: MICROSOFT_CLIENT_SECRET
-        value: xt_8Q~J7FkfNnN6DBMfmdfZF9egb8BA12quZJa8r
+        value: OPQ8Q~3WNOXZN~~5XscPNc3JNqXRRvyV1D_gOblp
       - key: MICROSOFT_TENANT_ID
         value: common
