@@ -9,7 +9,7 @@ services:
     runtime: python
     region: oregon
     plan: starter
-    buildCommand: pip install -r requirements.txt && python -c "from app_pro import app, db; app.app_context().push(); db.create_all()"
+    buildCommand: pip install -r requirements.txt && python init_db.py
     startCommand: gunicorn app_pro:app
     envVars:
       - key: DATABASE_URL
