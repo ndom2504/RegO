@@ -29,7 +29,10 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 app.config.update(
     PREFERRED_URL_SCHEME='https',
     SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_SAMESITE='Lax',
+    # SameSite=None nécessaire pour certains flux OAuth cross-site (Microsoft)
+    SESSION_COOKIE_SAMESITE='None',
+    REMEMBER_COOKIE_SECURE=True,
+    REMEMBER_COOKIE_SAMESITE='None',
 )
 
 CORS(app)
@@ -131,9 +134,12 @@ def auth_microsoft():
 def auth_microsoft_callback():
     """Callback après authentification Microsoft"""
     try:
-        # Récupérer le token
+        print("[AUTH CALLBACK] Début host=", request.host, flush=True)
         redirect_uri = url_for('auth_microsoft_callback', _external=True)
+        print("[AUTH CALLBACK] redirect_uri=", redirect_uri, flush=True)
         token = microsoft_oauth.get_token(redirect_uri)
+        print("[AUTH CALLBACK] token reçu (access length)", len(token.get('access_token','')),
+              "scope=", token.get('scope'), flush=True)
         
         # Récupérer les infos utilisateur
         user_info = microsoft_oauth.get_user_info(token)
@@ -183,17 +189,18 @@ def auth_microsoft_callback():
         user.outlook_email = email
         user.last_login = datetime.utcnow()
         
-        db.session.commit()
-        
-        # Connecter l'utilisateur
-        login_user(user, remember=True)
+    db.session.commit()
+    print("[AUTH CALLBACK] User commit OK id=", user.id, "email=", user.email, flush=True)
+    session.permanent = True
+    login_user(user, remember=True)
+    print("[AUTH CALLBACK] login_user OK session keys=", list(session.keys()), flush=True)
         
         flash(f'Connexion réussie! Bienvenue {display_name}', 'success')
         return redirect(url_for('dashboard'))
         
     except Exception as e:
         import traceback
-        print("[AUTH CALLBACK ERROR]", e)
+        print("[AUTH CALLBACK ERROR] Exception:", e, flush=True)
         traceback.print_exc()
         flash(f"Erreur d'authentification Microsoft: {str(e)}", 'error')
         return redirect(url_for('login'))
