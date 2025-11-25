@@ -48,7 +48,8 @@ class MicrosoftOAuth:
             client_secret=self.CLIENT_SECRET,
             server_metadata_url=f'{self.AUTHORITY}/v2.0/.well-known/openid-configuration',
             client_kwargs={
-                'scope': ' '.join(self.SCOPES)
+                'scope': ' '.join(self.SCOPES),
+                'code_challenge_method': 'S256'  # Active PKCE (requis par Azure AD)
             }
         )
     
