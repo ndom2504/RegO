@@ -200,8 +200,15 @@ def auth_microsoft_callback():
         db.session.commit()
         print("[AUTH CALLBACK] User commit OK id=", user.id, "email=", user.email, flush=True)
         session.permanent = True
-        login_user(user, remember=True)
-        print("[AUTH CALLBACK] login_user OK session keys=", list(session.keys()), flush=True)
+        # S'assurer que l'utilisateur est marqué actif
+        user.is_active = True
+        db.session.flush()
+        login_result = login_user(user, remember=True, force=True)
+        print("[AUTH CALLBACK] login_user result=", login_result, "user.get_id=", user.get_id(), flush=True)
+        if '_user_id' not in session:
+            session['_user_id'] = user.get_id()
+            print('[AUTH CALLBACK] _user_id manquant, ajouté manuellement', flush=True)
+        print("[AUTH CALLBACK] session keys après login=", list(session.keys()), flush=True)
         
         flash(f'Connexion réussie! Bienvenue {display_name}', 'success')
         return redirect(url_for('dashboard'))
