@@ -26,3 +26,4 @@ werkzeug==3.0.1
 # OAuth2 et serveur de production
 authlib==1.6.5
 gunicorn==21.2.0
+psycopg2-binary==2.9.9
